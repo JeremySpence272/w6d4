@@ -24,8 +24,6 @@ class AdvancedUserOperations:
         return("created person")
 
 
-
-
     def retrieve_users_by_criteria(self, min_age=None, max_age=None, gender=None):
         query = '''
             SELECT user_accounts.name, user_accounts.email, user_profiles.age, user_profiles.gender, user_profiles.address
@@ -50,11 +48,6 @@ class AdvancedUserOperations:
 
         return users
 
-
-        
-
-
-
     def update_user_profile(self, email, age=None, gender=None, address=None):
         fields = []
         params = []
@@ -69,30 +62,21 @@ class AdvancedUserOperations:
             params.append(address)
 
         if fields:
-            update_stmt = f"UPDATE user_profiles SET {', '.join(fields)} WHERE id = (SELECT profile FROM user_accounts WHERE email = ?)"
+            update_query = f"UPDATE user_profiles SET {', '.join(fields)} WHERE id = (SELECT profile FROM user_accounts WHERE email = ?)"
             params.append(email)
-            self.cursor.execute(update_stmt, params)
+            self.cursor.execute(update_query, params)
             self.conn.commit()
 
         return("updated person")
-
-
-
         
-
-
-
     def delete_users_by_criteria(self, gender=None):
         if gender is None:
             return 
     
-        delete_stmt = "DELETE FROM user_profiles WHERE gender = ?"
-        self.cursor.execute(delete_stmt, (gender,))
+        delete_query = "DELETE FROM user_profiles WHERE gender = ?"
+        self.cursor.execute(delete_query, (gender,))
 
         return ("deleted person")
-        
-
-
-
+    
     def __del__(self):
         self.conn.close()
